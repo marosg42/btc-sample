@@ -1,10 +1,6 @@
 import requests
-
-my_crypto = {
-    "BTC": {"volume": 1, "paid": 1},
-    "ETH": {"volume": 1, "paid": 1},
-    "LTC": {"volume": 1, "paid": 1},
-}
+import yaml
+from yaml.parser import ParserError
 
 
 def get_data(crypto="BTC", fiat="EUR"):
@@ -23,6 +19,16 @@ def get_data(crypto="BTC", fiat="EUR"):
         result = f"{crypto}{fiat}\t{rate:10.2f}\t{actual:10.2f} {fiat}\t diff {difference:+10.2f}"
     return result
 
+
+try:
+    my_crypto = yaml.load(open("data.yaml"), Loader=yaml.FullLoader)
+except IOError as e:
+    print(e)
+    exit(1)
+except ParserError as e:
+    print("Error parsing yaml file")
+    print(e)
+    exit(2)
 
 print(get_data(fiat="USDT"))
 for crypto in my_crypto:
